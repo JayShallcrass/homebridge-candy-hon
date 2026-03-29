@@ -3,7 +3,7 @@
   "pluginType": "platform",
   "singular": true,
   "headerDisplay": "Connect your Candy, Hoover, or Haier appliances to HomeKit via the hOn cloud platform.",
-  "footerDisplay": "For help, see the [GitHub repository](https://github.com/jamesshallcrass/homebridge-candy-hon).",
+  "footerDisplay": "For help, see the [GitHub repository](https://github.com/JayShallcrass/homebridge-candy-hon).",
   "schema": {
     "type": "object",
     "required": ["email", "password"],
