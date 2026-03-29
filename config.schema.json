@@ -1,0 +1,54 @@
+{
+  "pluginAlias": "CandyHon",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Connect your Candy, Hoover, or Haier appliances to HomeKit via the hOn cloud platform.",
+  "footerDisplay": "For help, see the [GitHub repository](https://github.com/jamesshallcrass/homebridge-candy-hon).",
+  "schema": {
+    "type": "object",
+    "required": ["email", "password"],
+    "properties": {
+      "name": {
+        "title": "Platform Name",
+        "type": "string",
+        "default": "Candy hOn",
+        "description": "The name that appears in Homebridge logs."
+      },
+      "email": {
+        "title": "hOn Account Email",
+        "type": "string",
+        "format": "email",
+        "description": "The email address you use to log into the hOn app.",
+        "placeholder": "you@example.com"
+      },
+      "password": {
+        "title": "hOn Account Password",
+        "type": "string",
+        "description": "Your hOn app password.",
+        "x-schema-form": {
+          "type": "password"
+        }
+      },
+      "pollInterval": {
+        "title": "Poll Interval (seconds)",
+        "type": "integer",
+        "default": 60,
+        "minimum": 30,
+        "maximum": 600,
+        "description": "How often to check the appliance status. Minimum 30 seconds."
+      },
+      "enableRemoteStart": {
+        "title": "Enable Remote Start/Stop",
+        "type": "boolean",
+        "default": false,
+        "description": "Allow starting and stopping programs from HomeKit. Use with caution -- ensure the appliance door is closed and loaded correctly before remote starting."
+      },
+      "pushcutWebhookUrl": {
+        "title": "Pushcut Webhook URL",
+        "type": "string",
+        "description": "Pushcut notification URL to trigger when a program finishes. Get this from the Pushcut app.",
+        "placeholder": "https://api.pushcut.io/xxx/notifications/Washing%20Machine"
+      }
+    }
+  }
+}

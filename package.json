@@ -1,0 +1,48 @@
+{
+  "name": "homebridge-candy-hon",
+  "version": "0.2.0",
+  "description": "Homebridge plugin for Candy, Hoover, and Haier appliances via the hOn cloud platform",
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "config.schema.json"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint src/",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "candy",
+    "hoover",
+    "haier",
+    "hon",
+    "washing-machine",
+    "washer-dryer",
+    "homekit",
+    "smart-home"
+  ],
+  "author": "James Shallcrass",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jamesshallcrass/homebridge-candy-hon.git"
+  },
+  "engines": {
+    "node": "^18.0.0 || ^20.18.0 || ^22.10.0 || ^24.0.0",
+    "homebridge": "^1.8.0 || ^2.0.0-beta.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "homebridge": "^2.0.0-beta.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "rimraf": "^6.0.0"
+  }
+}
