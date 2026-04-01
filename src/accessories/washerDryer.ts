@@ -18,7 +18,9 @@ export class WasherDryerAccessory {
 
   private state: HonDeviceState;
   private wasRunning = false;
+  private hasBeenRunning = false;
   private firstPoll = true;
+  private consecutiveFinishedPolls = 0;
   private finishedTimeout: ReturnType<typeof setTimeout> | null = null;
   private pollTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -149,6 +151,16 @@ export class WasherDryerAccessory {
   updateState(newState: HonDeviceState): void {
     const previouslyRunning = this.wasRunning;
     const wasFinished = this.state.finished;
+    const previousMode = this.state.machMode;
+
+    // Log mode transitions for debugging ghost triggers
+    if (newState.machMode !== previousMode) {
+      this.log.info(
+        `${this.appliance.applianceName}: Mode transition ${previousMode} -> ${newState.machMode} ` +
+        `(hasBeenRunning=${this.hasBeenRunning}, consecutiveFinished=${this.consecutiveFinishedPolls})`,
+      );
+    }
+
     this.state = newState;
 
     // Update Valve service
@@ -184,8 +196,25 @@ export class WasherDryerAccessory {
     );
 
 
-    // Program finished trigger -- fires on transition to finished, but not on first poll after restart
-    const justFinished = newState.finished && !wasFinished && !this.firstPoll;
+    // Track whether the machine has been through a running state this cycle
+    if (newState.running) {
+      this.hasBeenRunning = true;
+    }
+
+    // Debounce finished detection: require 2 consecutive polls showing finished,
+    // and only trigger if the machine was actually running this cycle
+    if (newState.finished) {
+      this.consecutiveFinishedPolls++;
+    } else {
+      this.consecutiveFinishedPolls = 0;
+    }
+
+    const justFinished = newState.finished
+      && !wasFinished
+      && !this.firstPoll
+      && this.hasBeenRunning
+      && this.consecutiveFinishedPolls >= 2;
+
     this.firstPoll = false;
     if (justFinished) {
       this.log.info(`${this.appliance.applianceName}: Program finished!`);
@@ -217,6 +246,12 @@ export class WasherDryerAccessory {
     }
 
     this.wasRunning = newState.running;
+
+    // Reset cycle tracking when machine returns to idle
+    if (!newState.active && !newState.finished) {
+      this.hasBeenRunning = false;
+      this.consecutiveFinishedPolls = 0;
+    }
 
     // Log state change
     if (newState.running) {
