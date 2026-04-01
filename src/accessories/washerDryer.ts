@@ -21,6 +21,7 @@ export class WasherDryerAccessory {
   private hasBeenRunning = false;
   private firstPoll = true;
   private consecutiveFinishedPolls = 0;
+  private occupancyTriggered = false;
   private finishedTimeout: ReturnType<typeof setTimeout> | null = null;
   private pollTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -95,7 +96,7 @@ export class WasherDryerAccessory {
       || this.accessory.addService(this.platform.Service.OccupancySensor, 'Program Finished', 'finished');
 
     this.finishedService.getCharacteristic(this.platform.Characteristic.OccupancyDetected)
-      .onGet(() => this.state.finished ? 1 : 0);
+      .onGet(() => this.occupancyTriggered ? 1 : 0);
 
     // Start polling
     this.startPolling();
@@ -218,6 +219,7 @@ export class WasherDryerAccessory {
     this.firstPoll = false;
     if (justFinished) {
       this.log.info(`${this.appliance.applianceName}: Program finished!`);
+      this.occupancyTriggered = true;
 
       this.finishedService.updateCharacteristic(
         this.platform.Characteristic.OccupancyDetected,
@@ -238,6 +240,7 @@ export class WasherDryerAccessory {
         clearTimeout(this.finishedTimeout);
       }
       this.finishedTimeout = setTimeout(() => {
+        this.occupancyTriggered = false;
         this.finishedService.updateCharacteristic(
           this.platform.Characteristic.OccupancyDetected,
           this.platform.Characteristic.OccupancyDetected.OCCUPANCY_NOT_DETECTED,
@@ -251,6 +254,7 @@ export class WasherDryerAccessory {
     if (!newState.active && !newState.finished) {
       this.hasBeenRunning = false;
       this.consecutiveFinishedPolls = 0;
+      this.occupancyTriggered = false;
     }
 
     // Log state change
