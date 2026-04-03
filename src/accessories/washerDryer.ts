@@ -21,6 +21,7 @@ export class WasherDryerAccessory {
   private hasBeenRunning = false;
   private firstPoll = true;
   private consecutiveFinishedPolls = 0;
+  private hasFiredThisCycle = false;
   private occupancyTriggered = false;
   private finishedTimeout: ReturnType<typeof setTimeout> | null = null;
   private pollTimer: ReturnType<typeof setInterval> | null = null;
@@ -211,7 +212,7 @@ export class WasherDryerAccessory {
     }
 
     const justFinished = newState.finished
-      && !wasFinished
+      && !this.hasFiredThisCycle
       && !this.firstPoll
       && this.hasBeenRunning
       && this.consecutiveFinishedPolls >= 2;
@@ -219,6 +220,7 @@ export class WasherDryerAccessory {
     this.firstPoll = false;
     if (justFinished) {
       this.log.info(`${this.appliance.applianceName}: Program finished!`);
+      this.hasFiredThisCycle = true;
       this.occupancyTriggered = true;
 
       this.finishedService.updateCharacteristic(
@@ -253,6 +255,7 @@ export class WasherDryerAccessory {
     // Reset cycle tracking when machine returns to idle
     if (!newState.active && !newState.finished) {
       this.hasBeenRunning = false;
+      this.hasFiredThisCycle = false;
       this.consecutiveFinishedPolls = 0;
       this.occupancyTriggered = false;
     }
