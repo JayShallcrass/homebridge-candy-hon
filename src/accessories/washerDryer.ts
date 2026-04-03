@@ -8,7 +8,6 @@ import {
 import { CandyHonPlatform } from '../platform';
 import { HonApiClient } from '../api/client';
 import { HonAppliance, HonDeviceState } from '../api/types';
-import axios from 'axios';
 
 const FINISHED_RESET_MS = 10 * 60 * 1000; // 10 minutes
 
@@ -227,15 +226,6 @@ export class WasherDryerAccessory {
         this.platform.Characteristic.OccupancyDetected,
         this.platform.Characteristic.OccupancyDetected.OCCUPANCY_DETECTED,
       );
-
-      // Send Pushcut notification to trigger Intercom announcement
-      if (this.platform.config.pushcutWebhookUrl) {
-        axios.get(this.platform.config.pushcutWebhookUrl).then(() => {
-          this.log.info('Pushcut notification sent');
-        }).catch((err: Error) => {
-          this.log.error('Pushcut notification failed:', err instanceof Error ? err.message : String(err));
-        });
-      }
 
       // Reset after 10 minutes
       if (this.finishedTimeout) {

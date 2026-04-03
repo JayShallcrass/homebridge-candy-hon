@@ -42,12 +42,6 @@
         "type": "boolean",
         "default": false,
         "description": "Allow starting and stopping programs from HomeKit. Use with caution -- ensure the appliance door is closed and loaded correctly before remote starting."
-      },
-      "pushcutWebhookUrl": {
-        "title": "Pushcut Webhook URL",
-        "type": "string",
-        "description": "Pushcut notification URL to trigger when a program finishes. Get this from the Pushcut app.",
-        "placeholder": "https://api.pushcut.io/xxx/notifications/Washing%20Machine"
       }
     }
   }

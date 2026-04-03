@@ -1,6 +1,6 @@
 {
   "name": "homebridge-candy-hon",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Homebridge plugin for Candy, Hoover, and Haier appliances via the hOn cloud platform",
   "main": "dist/index.js",
   "files": [
